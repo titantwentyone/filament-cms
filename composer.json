@@ -1,0 +1,75 @@
+{
+  "name": "titantwentyone/filament-cms",
+  "description": "Basic framework for providing dynamic pages and posts",
+  "type": "library",
+  "require-dev": {
+    "orchestra/testbench": "^8.0",
+    "phpunit/phpunit": "^10.0",
+    "pestphp/pest-plugin-livewire": "^2.0",
+    "pestphp/pest-plugin-laravel": "^2.0",
+    "pestphp/pest": "^2.0",
+    "laravel/sail": "^1.0"
+  },
+  "require": {
+    "php": "^8.0",
+    "filament/filament": "^2.0"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Titantwentyone\\FilamentCMS\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Tim Smith",
+      "email": "tim.smith@titan21.co.uk"
+    }
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Titantwentyone\\FilamentCMS\\FilamentCMSServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php vendor/bin/testbench package:discover --ansi"
+    ],
+    "coverage" : [
+      "Composer\\Config::disableProcessTimeout",
+      "php ./vendor/bin/pest -p2 --verbose --runner=WrapperRunner --coverage-html ./coverage -c ./phpunit.xml"
+    ],
+    "install-sail" : [
+      "laravel new app",
+      "(cd ./app && php artisan sail:install --with=mariadb)",
+      "mv app/docker-compose.yml docker-compose.yml",
+      "rm app -rf"
+    ],
+    "purge" : [
+      "rm -f tests/skeleton/bootstrap/cache/config.php",
+      "rm -f tests/skeleton/bootstrap/cache/packages.php",
+      "rm -f tests/skeleton/bootstrap/cache/services.php",
+      "php vendor/bin/testbench optimize:clear",
+      "composer dump-autoload",
+      "php vendor/bin/testbench cache:clear",
+      "php vendor/bin/testbench config:clear",
+      "php vendor/bin/testbench view:clear",
+      "php vendor/bin/testbench icons:clear",
+      "php vendor/bin/testbench route:clear",
+      "php vendor/bin/testbench route:cache",
+      "php vendor/bin/testbench config:cache"
+    ]
+  }
+}
