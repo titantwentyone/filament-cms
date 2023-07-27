@@ -1,5 +1,8 @@
 <?php
 
 return [
-    'models' => []
+    'models' => [],
+    'part_locations' => [],
+    'part_fields' => [],
+    'part_views' => []
 ];

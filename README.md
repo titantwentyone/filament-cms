@@ -63,4 +63,37 @@ public static function form(): array
 }
 ```
 You can add any filament field you wish here and this can then be accessed via the model. Remember to update
-your migration and models `fillable` attribute. 
+your migration and models `fillable` attribute.
+
+## Content Parts
+Sometimes you may want to reuse content throught a site in places such as footers or headers.
+To do this, you can create "parts" which take a location and content from fields you define.
+
+You can specify the locations you want to be provided in the config:
+
+```php
+'part_locations' => [
+    'footer' => 'Footer',
+    'header' => 'Header'
+]
+```
+You can specify the field or fields to be used for these content parts with the config option `part_fields`:
+
+```php
+'part_fields' => [
+    \Filament\Forms\Components\TextInput::make('test')
+]
+```
+`part_fields` can also be provided as a closure, the first argument of which is the `location`. This allows you to provide
+different field schemas dependening on the location in which they are to be used:
+
+```php
+'part_fields' => function($location) {
+    return match($location) {
+        'footer' => [\Filament\Forms\Components\TextInput::make('test')],
+        'header' => [\Filament\Forms\Components\TextInput::make('another_test')],
+        default => []
+    };
+}
+```
+To render the content on the frontend, use the helper function `content_part($location)`
