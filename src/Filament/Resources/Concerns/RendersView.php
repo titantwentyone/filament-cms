@@ -27,4 +27,14 @@ trait RendersView
         $process = new Process(['npm', 'run', 'build']);
         $process->run();
     }
+
+    protected function afterSave()
+    {
+        $this->renderView(self::$resource::$contentField);
+    }
+
+    protected function afterCreate(): void
+    {
+        $this->renderView(self::$resource::$contentField);
+    }
 }
