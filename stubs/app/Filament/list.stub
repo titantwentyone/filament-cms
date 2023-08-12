@@ -2,9 +2,9 @@
 
 namespace {{ namespace }};
 
+use {{ resource }};
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
-use App\Filament\Resources\{{ model }}Resource;
 
 class List{{ model_plural }} extends ListRecords
 {

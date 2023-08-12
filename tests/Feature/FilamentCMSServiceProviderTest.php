@@ -14,7 +14,7 @@ it('will route to the correct view', function() {
         'is_published' => true
     ]);
 
-    $this->get('/testing')
+    $this->get('/pages/testing')
         ->assertSuccessful()
         ->assertViewIs('page');
 
@@ -48,7 +48,7 @@ it('will set up the relevant disks', function () {
     \Illuminate\Support\Facades\Storage::shouldHaveReceived('build')
         ->with([
             'driver' => 'local',
-            'root' => base_path(config('filament.livewire.path'))
+            'root' => base_path(config('filament.resources.path'))
         ]);
 
 });

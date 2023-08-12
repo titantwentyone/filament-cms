@@ -2,6 +2,8 @@
 
 namespace {{ namespace }};
 
+use {{ namespace }}\{{ model }}Resource\Pages;
+use {{ model_fqn }};
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Pages\CreateRecord;
@@ -9,17 +11,12 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Support\Str;
-use {{ model_fqn }};
-use {{ namespace }}\{{ model }}Resource\Pages;
 
 class {{ model }}Resource extends Resource
 {
     protected static ?string $model = {{ model }}::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-collection';
-
     protected static ?string $navigationGroup = 'content';
-
     public static string $contentField = 'content';
 
     public static function form(Form $form): Form

@@ -10,7 +10,7 @@ class Page extends Content
 {
     use SoftDeletes;
 
-    public static $prefix = '/';
+    public static $prefix = '/pages';
     public static $view = 'page';
 
     protected $fillable = [

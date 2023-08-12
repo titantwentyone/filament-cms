@@ -61,12 +61,12 @@ it('will show the page if published', function() {
         'is_published' => true
     ]);
 
-    $this->get('/')->assertSuccessful();
+    $this->get('/pages')->assertSuccessful();
 
     $page1->is_published = false;
     $page1->save();
 
-    $this->get('/')->assertNotFound();
+    $this->get('/pages')->assertNotFound();
 });
 
 it('will show the page if not published but logged in', function() {
@@ -78,7 +78,7 @@ it('will show the page if not published but logged in', function() {
         'is_published' => false
     ]);
 
-    $this->get('/')->assertNotFound();
+    $this->get('/pages')->assertNotFound();
 
     $user = Tests\Fixtures\App\Models\User::create([
         'name' => 'Test User',
@@ -88,5 +88,5 @@ it('will show the page if not published but logged in', function() {
 
     $this->be($user, 'web');
 
-    $this->get('/')->assertSuccessful();
+    $this->get('/pages')->assertSuccessful();
 });

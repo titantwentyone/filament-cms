@@ -45,7 +45,7 @@ class FilamentCMSServiceProvider extends PluginServiceProvider
                 ]),
                 'filament' => Storage::build([
                     'driver' => 'local',
-                    'root' => base_path(config('filament.livewire.path'))
+                    'root' => base_path(config('filament.resources.path'))
                 ])
             ],
             Storage::disk('filament_cms_stubs'));

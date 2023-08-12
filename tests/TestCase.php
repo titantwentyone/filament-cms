@@ -67,12 +67,12 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ],
         ));
 
-        $app['config']->set('filament.resources.namespace', 'App\\Filament\\Resources');
-        $app['config']->set('filament.resources.path', app_path('Filament/Resources'));
+        $app['config']->set('filament.livewire.path', realpath(__DIR__.'/Fixtures/app/Filament'));
+        $app['config']->set('filament.resources.namespace', 'Tests\Fixtures\App\Filament\Resources');
+        $app['config']->set('filament.resources.path', realpath(__DIR__.'/Fixtures/app/Filament/Resources'));
         $app['config']->set('filament.resources.register', [
             \Tests\Fixtures\App\Filament\Resources\PageResource::class
         ]);
-
     }
 
 

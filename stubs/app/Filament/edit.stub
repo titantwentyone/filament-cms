@@ -2,9 +2,9 @@
 
 namespace {{ namespace }};
 
+use {{ resource }};
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Resources\{{ model }}Resource;
 use Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView;
 
 class Edit{{ model }} extends EditRecord

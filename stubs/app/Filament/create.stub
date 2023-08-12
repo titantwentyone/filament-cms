@@ -2,8 +2,8 @@
 
 namespace {{ namespace }};
 
+use {{ resource }};
 use Filament\Resources\Pages\CreateRecord;
-use App\Filament\Resources\{{ model }}Resource;
 use Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView;
 
 class Create{{ model }} extends CreateRecord

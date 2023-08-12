@@ -3,6 +3,7 @@
 namespace Titantwentyone\FilamentCMS\Commands;
 
 use Filament\Support\Commands\Concerns\CanManipulateFiles;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Titantwentyone\FilamentCMS\Commands\Composites\StubHandler;
 
@@ -18,8 +19,23 @@ class MakeContent extends \Illuminate\Console\Command
     {
         $this->handler = $handler;
 
-        $model = Str::of($this->argument('model'))->ucfirst();
+        $model = $this->argument('model');
+
+        $model_name = $model;
         $model_fqn = "App\\Models\\$model";
+        $model_namespace = "App\\Models";
+        $model_path = '/';
+
+        if(Str::of($model)->contains("\\")) { // is it namespaced?
+            $exploded = explode("\\", $model);
+            $model_name = collect($exploded)->last();
+            $model_fqn = $model;
+            array_pop($exploded);
+            $model_namespace = collect($exploded)->join('\\');
+            $model_path = Str::of(collect($exploded)->join('/'))->append('/');
+        }
+
+        $model = Str::of($model_name)->ucfirst();
         $model_plural = $model->plural();
         $table = $model_plural->lower();
         $view = Str::of($model)->lower()->slug();
@@ -36,15 +52,16 @@ class MakeContent extends \Illuminate\Console\Command
         $this->handler->writeStub(
             'models',
             'model',
-            "$model.php",
+            "{$model_path}{$model}.php",
             [
                 'model' => $model,
+                'model_namespace' => $model_namespace,
                 'prefix' => "/".$view->plural(),
                 'view' => $view
             ]
         );
 
-        $date = now()->format('Y_m_d');
+        $date = now()->format('Y_m_d_His');
 
         $this->handler->writeStub(
             'migrations',
@@ -58,43 +75,48 @@ class MakeContent extends \Illuminate\Console\Command
         $this->handler->writeStub(
             'filament',
             'filament-resource',
-            "Resources/{$model}Resource.php",
+            "/{$model}Resource.php",
             [
-                'namespace' => 'App\Filament\Resources',
+                'namespace' => config('filament.resources.namespace'),
                 'model' => $model,
                 'model_fqn' => $model_fqn,
                 'model_plural' => $model_plural
             ]
         );
 
+        $pages_namespace = config('filament.resources.namespace')."\\{$model}Resource\\Pages";
+
         $this->handler->writeStub(
             'filament',
             'filament-create',
-            "Resources/{$model}Resource/Pages/Create{$model}.php",
+            "/{$model}Resource/Pages/Create{$model}.php",
             [
-                'namespace' => "App\Filament\Resources\\{$model}Resource\Pages",
-                'model' => $model
+                'namespace' => $pages_namespace,
+                'model' => $model,
+                'resource' => config('filament.resources.namespace')."\\{$model}Resource"
             ]
         );
 
         $this->handler->writeStub(
             'filament',
             'filament-edit',
-            "Resources/{$model}Resource/Pages/Edit{$model}.php",
+            "/{$model}Resource/Pages/Edit{$model}.php",
             [
-                'namespace' => "App\Filament\Resources\\{$model}Resource\Pages",
-                'model' => $model
+                'namespace' => $pages_namespace,
+                'model' => $model,
+                'resource' => config('filament.resources.namespace')."\\{$model}Resource"
             ]
         );
 
         $this->handler->writeStub(
             'filament',
             'filament-list',
-            "Resources/{$model}Resource/Pages/List{$model_plural}.php",
+            "/{$model}Resource/Pages/List{$model_plural}.php",
             [
-                'namespace' => "App\Filament\Resources\\{$model}Resource\Pages",
+                'namespace' => $pages_namespace,
                 'model' => $model,
-                'model_plural' => $model_plural
+                'model_plural' => $model_plural,
+                'resource' => config('filament.resources.namespace')."\\{$model}Resource"
             ]
         );
     }
