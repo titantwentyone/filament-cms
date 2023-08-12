@@ -71,6 +71,7 @@ it('will show the page if published', function() {
 
 it('will show the page if not published but logged in', function() {
 
+    //@todo add banner to page to state "unpublished"?
     $page1 = Tests\Fixtures\App\Models\Page::create([
         'title' => 'Homepage',
         'slug' => 'homepage',
@@ -78,7 +79,15 @@ it('will show the page if not published but logged in', function() {
         'is_published' => false
     ]);
 
+    $page2 = Tests\Fixtures\App\Models\Page::create([
+        'title' => 'Another page',
+        'slug' => 'another-page',
+        'is_root' => false,
+        'is_published' => false
+    ]);
+
     $this->get('/pages')->assertNotFound();
+    $this->get('/pages/another-page')->assertNotFound();
 
     $user = Tests\Fixtures\App\Models\User::create([
         'name' => 'Test User',
@@ -89,4 +98,5 @@ it('will show the page if not published but logged in', function() {
     $this->be($user, 'web');
 
     $this->get('/pages')->assertSuccessful();
+    $this->get('/pages/another-page')->assertSuccessful();
 });
