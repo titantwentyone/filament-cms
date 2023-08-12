@@ -4,38 +4,40 @@ use Illuminate\Filesystem\Filesystem;
 
 it('will make the necessary files', function() {
 
-    $mock = $this->partialMock(\Illuminate\Filesystem\Filesystem::class, function(\Mockery\MockInterface $mock) {
+    $models = \Illuminate\Support\Facades\Storage::fake('models');
+    $migrations = \Illuminate\Support\Facades\Storage::fake('migrations');
+    $filament = \Illuminate\Support\Facades\Storage::fake('filament');
 
-        $mock->shouldReceive('put')
-            ->with(app_path("Models/Page.php"), getModelContent())
-            ->once();
-
-        $date = now()->format('Y_m_d');
-        $mock->shouldReceive('put')
-            ->with(database_path("migrations/{$date}_create_pages_table.php"), getMigrationContent())
-            ->once();
-
-        $mock->shouldReceive('put')
-            ->with(app_path("Filament/Resources/PageResource.php"), getPageResourceContent())
-            ->once();
-
-        $mock->shouldReceive('put')
-            ->with(app_path("Filament/Resources/PageResource/Pages/CreatePage.php"), getCreatePageContent())
-            ->once();
-
-        $mock->shouldReceive('put')
-            ->with(app_path("Filament/Resources/PageResource/Pages/EditPage.php"), getEditPageContent())
-            ->once();
-
-        $mock->shouldReceive('put')
-            ->with(app_path("Filament/Resources/PageResource/Pages/ListPages.php"), getListPagesContent())
-            ->once();
-
+    app()->bind(\Titantwentyone\FilamentCMS\Commands\Composites\StubHandler::class, function($app) use ($models, $migrations, $filament) {
+        return new \Titantwentyone\FilamentCMS\Commands\Composites\StubHandler([
+            'models' => $models,
+            'migrations' => $migrations,
+            'filament' => $filament
+        ],
+        \Illuminate\Support\Facades\Storage::disk('filament_cms_stubs'));
     });
 
-    app()->bind(Filesystem::class, fn() => $mock);
+    $this->artisan('make:content Post');
 
-    $this->artisan('make:content Page');
+    $models->assertExists('Post.php');
+    expect($models->get('Post.php'))->toBe(getModelContent());
+
+    $date = now()->format('Y_m_d');
+    $migrations->assertExists("{$date}_create_posts_table.php");
+    expect($migrations->get("{$date}_create_posts_table.php"))->toBe(getMigrationContent());
+
+    $filament->assertExists("Resources/PostResource.php");
+    expect($filament->get("Resources/PostResource.php"))->toBe(getPostResourceContent());
+
+    $filament->assertExists("Resources/PostResource/Pages/CreatePost.php");
+    expect($filament->get("Resources/PostResource/Pages/CreatePost.php"))->toBe(getCreatePostContent());
+
+    $filament->assertExists("Resources/PostResource/Pages/EditPost.php");
+    expect($filament->get("Resources/PostResource/Pages/EditPost.php"))->toBe(getEditPostContent());
+
+    $filament->assertExists("Resources/PostResource/Pages/ListPosts.php");
+    expect($filament->get("Resources/PostResource/Pages/ListPosts.php"))->toBe(getListPostsContent());
+
 });
 
 function getModelContent()
@@ -49,12 +51,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Titantwentyone\FilamentCMS\Contracts\Content;
 
-class Page extends Content
+class Post extends Content
 {
     use SoftDeletes;
 
-    public static \$prefix = '/pages';
-    public static \$view = 'page';
+    public static \$prefix = '/posts';
+    public static \$view = 'post';
 
     protected \$fillable = [
         'title',
@@ -86,7 +88,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('pages', function (Blueprint \$table) {
+        Schema::create('posts', function (Blueprint \$table) {
             \$table->id();
             \$table->string('slug');
             \$table->longText('content')->nullable();
@@ -100,7 +102,7 @@ return new class extends Migration {
 };";
 }
 
-function getPageResourceContent()
+function getPostResourceContent()
 {
     return "<?php
 
@@ -113,14 +115,18 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Support\Str;
-use App\Models\Page;
-use App\Filament\Resources\PageResource\Pages;
+use App\Models\Post;
+use App\Filament\Resources\PostResource\Pages;
 
-class PageResource extends Resource
+class PostResource extends Resource
 {
-    protected static ?string \$model = Page::class;
+    protected static ?string \$model = Post::class;
 
     protected static ?string \$navigationIcon = 'heroicon-o-collection';
+
+    protected static ?string \$navigationGroup = 'content';
+
+    public static string \$contentField = 'content';
 
     public static function form(Form \$form): Form
     {
@@ -131,7 +137,7 @@ class PageResource extends Resource
                     ->schema(static::headerForm()),
                 Forms\Components\Grid::make()
                     ->columns(1)
-                    ->schema(Page::form()),
+                    ->schema(Post::form()),
                 Forms\Components\Grid::make()
                     ->columns(1)
                     ->schema(static::footerForm())
@@ -196,42 +202,48 @@ class PageResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPages::route('/'),
-            'create' => Pages\CreatePage::route('/create'),
-            'edit' => Pages\EditPage::route('/{record}/edit'),
+            'index' => Pages\ListPosts::route('/'),
+            'create' => Pages\CreatePost::route('/create'),
+            'edit' => Pages\EditPost::route('/{record}/edit'),
         ];
     }    
 }";
 }
 
-function getCreatePageContent()
+function getCreatePostContent()
 {
     return "<?php
 
-namespace App\Filament\Resources\PageResource\Pages;
+namespace App\Filament\Resources\PostResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
-use App\Filament\Resources\PageResource;
+use App\Filament\Resources\PostResource;
+use Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView;
 
-class CreatePage extends CreateRecord
+class CreatePost extends CreateRecord
 {
-    protected static string \$resource = PageResource::class;
+    use RendersView;
+
+    protected static string \$resource = PostResource::class;
 }";
 }
 
-function getEditPageContent()
+function getEditPostContent()
 {
     return "<?php
 
-namespace App\Filament\Resources\PageResource\Pages;
+namespace App\Filament\Resources\PostResource\Pages;
 
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Resources\PageResource;
+use App\Filament\Resources\PostResource;
+use Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView;
 
-class EditPage extends EditRecord
+class EditPost extends EditRecord
 {
-    protected static string \$resource = PageResource::class;
+    use RendersView;
+
+    protected static string \$resource = PostResource::class;
 
     protected function getActions(): array
     {
@@ -242,19 +254,19 @@ class EditPage extends EditRecord
 }";
 }
 
-function getListPagesContent()
+function getListPostsContent()
 {
     return "<?php
 
-namespace App\Filament\Resources\PageResource\Pages;
+namespace App\Filament\Resources\PostResource\Pages;
 
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
-use App\Filament\Resources\PageResource;
+use App\Filament\Resources\PostResource;
 
-class ListPages extends ListRecords
+class ListPosts extends ListRecords
 {
-    protected static string \$resource = PageResource::class;
+    protected static string \$resource = PostResource::class;
 
     protected function getActions(): array
     {

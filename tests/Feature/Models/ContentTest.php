@@ -27,13 +27,13 @@ it('will provide the correct url', function() {
 
 it('there can only be one root item', function () {
 
-    $page1 = \Tests\Skeleton\app\Models\Page::create([
+    $page1 = Tests\Fixtures\App\Models\Page::create([
         'title' => 'Homepage',
         'slug' => 'homepage',
         'is_root' => true
     ]);
 
-    $page2 = \Tests\Skeleton\app\Models\Page::create([
+    $page2 = Tests\Fixtures\App\Models\Page::create([
         'title' => 'Not Homepage',
         'slug' => 'not-homepage',
         'is_root' => false
@@ -54,7 +54,7 @@ it('there can only be one root item', function () {
 
 it('will show the page if published', function() {
 
-    $page1 = \Tests\Skeleton\app\Models\Page::create([
+    $page1 = Tests\Fixtures\App\Models\Page::create([
         'title' => 'Homepage',
         'slug' => 'homepage',
         'is_root' => true,
@@ -71,7 +71,7 @@ it('will show the page if published', function() {
 
 it('will show the page if not published but logged in', function() {
 
-    $page1 = \Tests\Skeleton\app\Models\Page::create([
+    $page1 = Tests\Fixtures\App\Models\Page::create([
         'title' => 'Homepage',
         'slug' => 'homepage',
         'is_root' => true,
@@ -80,7 +80,7 @@ it('will show the page if not published but logged in', function() {
 
     $this->get('/')->assertNotFound();
 
-    $user = \Tests\Skeleton\app\Models\User::create([
+    $user = Tests\Fixtures\App\Models\User::create([
         'name' => 'Test User',
         'email' => 'test@test.com',
         'password' => \Illuminate\Support\Facades\Hash::make('password')

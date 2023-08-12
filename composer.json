@@ -25,7 +25,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\": "tests/"
+      "Tests\\": "tests/",
+      "Tests\\Fixtures\\App\\": "tests/Fixtures/app"
     }
   },
   "authors": [

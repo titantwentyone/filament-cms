@@ -2,6 +2,7 @@
 
 namespace Titantwentyone\FilamentCMS\Contracts;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 abstract class Content extends \Illuminate\Database\Eloquent\Model
@@ -22,5 +23,10 @@ abstract class Content extends \Illuminate\Database\Eloquent\Model
                     ->update(['is_root' => false]);
             }
         });
+    }
+
+    public function scopePublished(Builder $query) : void
+    {
+        $query->where('is_published', true);
     }
 }

@@ -1,0 +1,22 @@
+<?php
+
+namespace {{ namespace }};
+
+use Filament\Pages\Actions;
+use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\{{ model }}Resource;
+use Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView;
+
+class Edit{{ model }} extends EditRecord
+{
+    use RendersView;
+
+    protected static string $resource = {{ model }}Resource::class;
+
+    protected function getActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+        ];
+    }
+}

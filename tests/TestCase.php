@@ -14,9 +14,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\LivewireServiceProvider;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Tests\Fixtures\app\ResourceServiceProvider;
-use Tests\Skeleton\app\Filament\Resources\PageResource;
-use Tests\Skeleton\app\Models\Page;
-use Tests\Skeleton\app\Models\Post;
 use Titantwentyone\FilamentCMS\FilamentCMSServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
@@ -51,7 +48,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function defineEnvironment($app)
     {
-
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
             'driver'   => 'sqlite',
@@ -60,45 +56,23 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ]);
 
         $app['config']->set('filament-cms.models', [
-            Page::class,
-            Post::class
+            \Tests\Fixtures\App\Models\Page::class,
+            \Tests\Fixtures\App\Models\Post::class
         ]);
 
         $app['config']->set('view.paths', array_merge(
-            $app['config']->get('view.paths'),
+            config('view.paths'),
             [
-                __DIR__.'/Fixtures/resources/views',
-//                __DIR__.'/../vendor/filament/filament/resources/views'
+                __DIR__.'/Fixtures/resources/views'
             ],
-
         ));
 
-        $app['config']->set('livewire.view_path', __DIR__ . '/resources/views/livewire');
-
-        //$app['config']->set('blade-heroicons.prefix', 'heroicon');
-
-        //$app['config']->set('blade-heroicons.sets.herocions.prefix', 'heroicon');
-
-//        $app['config']->set('livewire.class_namespace', '\\App\\Http\\Livewire');
-
-        $app['config']->set('filament.resources.namespace', 'Tests\\Fixtures\\app\\Filament\\Resources');
-        $app['config']->set('filament.resources.path', __DIR__.'/../Fixtures/app/Filament/Resources');
+        $app['config']->set('filament.resources.namespace', 'App\\Filament\\Resources');
+        $app['config']->set('filament.resources.path', app_path('Filament/Resources'));
         $app['config']->set('filament.resources.register', [
-            PageResource::class
+            \Tests\Fixtures\App\Filament\Resources\PageResource::class
         ]);
 
-        //dump($app['config']->get('filament'));
-//        dump($app['config']);
-    }
-
-    public function ignorePackageDiscoveriesFrom()
-    {
-        return ['akaunting/laravel-money'];
-    }
-
-    public static function applicationBasePath()
-    {
-        return __DIR__.'/Skeleton';
     }
 
 

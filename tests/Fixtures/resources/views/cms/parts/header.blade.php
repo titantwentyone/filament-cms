@@ -1,0 +1,1 @@
+{!! $part->content['header_text'] !!}

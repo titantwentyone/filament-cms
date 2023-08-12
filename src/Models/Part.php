@@ -2,12 +2,10 @@
 
 namespace Titantwentyone\FilamentCMS\Models;
 
-use Filament\Tables\Concerns\HasContent;
 use Illuminate\Database\Eloquent\Model;
 
 class Part extends Model
 {
-    use HasContent;
     public $timestamps = false;
 
     protected $fillable = [
@@ -24,7 +22,14 @@ class Part extends Model
     public function render()
     {
         $part_views = config('filament-cms.part_views');
-        return view($part_views($this->location))->with([
+
+        if(is_callable($part_views)) {
+            $view = $part_views($this->location);
+        } else {
+            $view = $part_views[$this->location];
+        }
+
+        return view($view)->with([
             'part' => $this
         ])->render();
     }

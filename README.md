@@ -37,7 +37,7 @@ You can specify that content is the root by using the "Is root" toggle switch in
 For content defined as root, this is the homepage where the `prefix` is `/`. For content defined with a prefix of `/pages` this page is
 used at that path (e.g. yoursite.com/pages).
 
-Note that your routes are processed after the packages routes.
+Note that your app routes are processed after the packages routes.
 
 When the view is called, it is passed the instance of model through its `$model` view attribute. In the view you can access any property provided.
 ```php
@@ -97,3 +97,32 @@ different field schemas dependening on the location in which they are to be used
 }
 ```
 To render the content on the frontend, use the helper function `content_part($location)`
+
+## Dynamic rendering
+When saving a content item or part, the CMS will render your pages into a location in `storage` and then run
+`npm vite build` which will compile any tailwind classes that you may have used within the content data.
+
+By default the location of the rendered content is set as `/storage/cms`. You should add this to your `content` array in `tailwind.config.js`:
+
+```js
+module.exports = {
+    content: [
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
+        './storage/cms/**/*.blade.php'   
+    ]
+}
+```
+
+You can change the location of the cms storage with the config setting `dynamic_render_location`:
+
+```php
+'dynamic_render_location` => base_path('/storage/different-cms-directory')
+```
+
+This does result in a slower time to save. You can turn off this functionality by amendign the config:
+
+```php
+'dynamic_render' => false
+```

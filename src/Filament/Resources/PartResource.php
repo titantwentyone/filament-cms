@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Str;
+use Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView;
 use Titantwentyone\FilamentCMS\Filament\Resources\PartResource\Pages;
 use Titantwentyone\FilamentCMS\Models\Part;
 
@@ -22,6 +23,8 @@ class PartResource extends Resource
     protected static ?string $navigationGroup = 'Content';
 
     protected static ?string $recordTitleAttribute = 'id';
+
+    public static string $contentField = 'content';
 
     public static function form(Form $form): Form
     {
@@ -38,7 +41,11 @@ class PartResource extends Resource
                     ->schema(function($get) {
                         $fields = config('filament-cms.part_fields');
                         if(is_callable($fields)) {
-                            return $fields($get('location'));
+                            if($get('location')) {
+                                return $fields($get('location'));
+                            } else {
+                                return [];
+                            }
                         } else {
                             return $fields;
                         }
