@@ -30,7 +30,7 @@ class FilamentCMSServiceProvider extends PluginServiceProvider
         //dump(app()->config);
         app()->config['filesystems.disks.filament_cms_stubs'] = [
             'driver' => 'local',
-            'root' => __DIR__.'/../../stubs'
+            'root' => __DIR__.'/../stubs'
         ];
 
         app()->bind(StubHandler::class, function(Application $app) {
