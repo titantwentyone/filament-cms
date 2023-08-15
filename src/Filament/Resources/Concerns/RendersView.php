@@ -37,7 +37,10 @@ trait RendersView
     {
         $process = new Process(['npm', 'run', 'build']);
         $process->setWorkingDirectory(base_path());
-        $process->run();}
+        $process->run(function($type, $buffer) {
+
+        });
+    }
 
     protected function afterSave()
     {
