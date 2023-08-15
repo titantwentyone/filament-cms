@@ -6,9 +6,12 @@ use Filament\PluginServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Storage;
 use Spatie\LaravelPackageTools\Package;
+use Symfony\Component\Process\Process;
 use Titantwentyone\FilamentCMS\Commands\Composites\StubHandler;
 use Titantwentyone\FilamentCMS\Commands\MakeContent;
 use Titantwentyone\FilamentCMS\Controllers\ContentController;
+use Titantwentyone\FilamentCMS\Domain\Process\AssetCompilationProcess;
+use Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView;
 use Titantwentyone\FilamentCMS\Filament\Resources\PartResource;
 
 class FilamentCMSServiceProvider extends PluginServiceProvider
@@ -62,11 +65,17 @@ class FilamentCMSServiceProvider extends PluginServiceProvider
             return Storage::disk('filament_cms_render');
         });
 
-//        app()->when(ContentController::class)
-//            ->needs('$content_routes')
-//            ->give(function() {
-//                collect(config('filament-cms.models'))->mapWithKeys(fn($class) => [$class => $class::prefix]);
-//            });
+        app()->config['logging.channels.filament_cms_dynamic_render'] = [
+            'driver' => 'single',
+            'path' => storage_path('logs/filament_cms_dynamic_render.log')
+        ];
+
+        app()->bind(AssetCompilationProcess::class, function($app) {
+            $command = config('filament-cms.compilation_command') ?? 'npm run build';
+            $command = explode(" ", $command);
+            return new AssetCompilationProcess(new Process($command));
+        });
+
     }
 
     public function packageRegistered(): void

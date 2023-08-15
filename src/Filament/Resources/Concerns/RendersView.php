@@ -3,8 +3,10 @@
 namespace Titantwentyone\FilamentCMS\Filament\Resources\Concerns;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
+use Titantwentyone\FilamentCMS\Domain\Process\AssetCompilationProcess;
 use Titantwentyone\FilamentCMS\Models\Part;
 
 trait RendersView
@@ -30,15 +32,23 @@ trait RendersView
             $this->cms_disk->put($this->record->slug.'.blade.php', $content);
         }
 
+        $render_info = [
+            'type' => get_class($this->record),
+            'id' => $this->record->id
+        ];
+
+        Log::channel('filament_cms_dynamic_render')->info($render_info);
+
         $this->runViteBuild();
     }
 
     protected function runViteBuild()
     {
-        $process = new Process(['npm', 'run', 'build']);
+        //$process = new Process(['npm', 'run', 'build']);
+        $process = app(AssetCompilationProcess::class)->get();
         $process->setWorkingDirectory(base_path());
         $process->run(function($type, $buffer) {
-
+            Log::channel('filament_cms_dynamic_render')->info($buffer);
         });
     }
 
