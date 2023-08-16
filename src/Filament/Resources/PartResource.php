@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView;
 use Titantwentyone\FilamentCMS\Filament\Resources\PartResource\Pages;
 use Titantwentyone\FilamentCMS\Models\Part;
@@ -70,6 +71,7 @@ class PartResource extends Resource
         ];
     }
 
+    #[CodeCoverageIgnore]
     public static function getGloballySearchableAttributes(): array
     {
         return [];
