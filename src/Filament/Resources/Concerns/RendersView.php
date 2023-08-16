@@ -2,6 +2,7 @@
 
 namespace Titantwentyone\FilamentCMS\Filament\Resources\Concerns;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -36,6 +37,8 @@ trait RendersView
             'type' => get_class($this->record),
             'id' => $this->record->id
         ];
+
+        $render_info = collect($render_info)->join('\n');
 
         Log::channel('filament_cms_dynamic_render')->info($render_info);
 

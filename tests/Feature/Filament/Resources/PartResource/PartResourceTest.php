@@ -6,7 +6,8 @@ it('has the correct fields', function() {
    \Pest\Livewire\livewire(CreatePart::class)
         ->assertFormFieldExists('slug')
         ->assertFormFieldExists('location');
-});
+})
+->covers(\Titantwentyone\FilamentCMS\Filament\Resources\PartResource::class);
 
 it('will slugify the slug', function () {
     \Pest\Livewire\livewire(CreatePart::class)
@@ -16,7 +17,8 @@ it('will slugify the slug', function () {
         ->assertFormSet([
             'slug' => 'not-a-slug'
         ]);
-});
+})
+->covers(\Titantwentyone\FilamentCMS\Filament\Resources\PartResource::class);
 
 it('will provide custom fields', function () {
 
@@ -27,7 +29,8 @@ it('will provide custom fields', function () {
     \Pest\Livewire\livewire(CreatePart::class)
         ->assertFormFieldExists('content.address');
 
-});
+})
+->covers(\Titantwentyone\FilamentCMS\Filament\Resources\PartResource::class);
 
 it('will provide custom fields via a closure', function () {
     config()->set('filament-cms.part_fields', fn($location) => match($location) {
@@ -49,4 +52,16 @@ it('will provide custom fields via a closure', function () {
             'location' => 'footer'
         ])
         ->assertFormFieldExists('content.footer_field');
-});
+})
+->covers(\Titantwentyone\FilamentCMS\Filament\Resources\PartResource::class);
+
+it('will display a table of parts', function () {
+
+    \Titantwentyone\FilamentCMS\Models\Part::create([
+        'slug' => 'header'
+    ]);
+
+    \Pest\Livewire\livewire(\Titantwentyone\FilamentCMS\Filament\Resources\PartResource\Pages\ListParts::class)
+        ->assertCanSeeTableRecords(\Titantwentyone\FilamentCMS\Models\Part::all());
+})
+    ->covers(\Titantwentyone\FilamentCMS\Filament\Resources\PartResource::class);

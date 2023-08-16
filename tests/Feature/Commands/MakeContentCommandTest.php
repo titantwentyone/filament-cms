@@ -48,4 +48,25 @@ it('will make the necessary files', function() {
     expect($filament->get("PageResource/Pages/ListPages.php"))
         ->toBe(file_get_contents(__DIR__.'/../../Fixtures/app/Filament/Resources/PageResource/Pages/ListPages.php'));
 
+})
+->covers(\Titantwentyone\FilamentCMS\Commands\MakeContent::class);
+
+test('the model does not have to be namespaced', function () {
+
+    $models = \Illuminate\Support\Facades\Storage::fake('models');
+    $migrations = \Illuminate\Support\Facades\Storage::fake('migrations');
+    $filament = \Illuminate\Support\Facades\Storage::fake('filament');
+
+    app()->bind(\Titantwentyone\FilamentCMS\Commands\Composites\StubHandler::class, function($app) use ($models, $migrations, $filament) {
+        return new \Titantwentyone\FilamentCMS\Commands\Composites\StubHandler([
+            'models' => $models,
+            'migrations' => $migrations,
+            'filament' => $filament
+        ],
+            \Illuminate\Support\Facades\Storage::disk('filament_cms_stubs'));
+    });
+
+    $this->artisan("make:content Page");
+
+    $models->assertExists('Page.php');
 });

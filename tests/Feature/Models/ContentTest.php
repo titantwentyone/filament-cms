@@ -23,7 +23,8 @@ it('will provide the correct url', function() {
     $page->is_root = true;
 
     expect($page->url)->toBe('/');
-});
+})
+->covers(\Tests\Fixtures\App\Models\Page::class);
 
 it('there can only be one root item', function () {
 
@@ -50,7 +51,8 @@ it('there can only be one root item', function () {
     expect($page2->is_root)->toBeTrue();
     expect($page1->is_root)->toBeFalsy();
 
-});
+})
+->covers(\Tests\Fixtures\App\Models\Page::class);
 
 it('will show the page if published', function() {
 
@@ -67,7 +69,8 @@ it('will show the page if published', function() {
     $page1->save();
 
     $this->get('/pages')->assertNotFound();
-});
+})
+->covers(\Tests\Fixtures\App\Models\Page::class);
 
 it('will show the page if not published but logged in', function() {
 
@@ -99,4 +102,5 @@ it('will show the page if not published but logged in', function() {
 
     $this->get('/pages')->assertSuccessful();
     $this->get('/pages/another-page')->assertSuccessful();
-});
+})
+->covers(\Tests\Fixtures\App\Models\Page::class);
