@@ -8,7 +8,8 @@
     "pestphp/pest-plugin-livewire": "^2.0",
     "pestphp/pest-plugin-laravel": "^2.0",
     "pestphp/pest": "^2.0",
-    "laravel/sail": "^1.0"
+    "laravel/sail": "^1.0",
+    "timacdonald/log-fake": "^2.1"
   },
   "require": {
     "php": "^8.0",
@@ -17,7 +18,8 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Titantwentyone\\FilamentCMS\\": "src/"
+      "Titantwentyone\\FilamentCMS\\": "src/",
+      "Tests\\Fixtures\\App\\": "tests/Fixtures/app"
     },
     "files": [
       "src/helpers.php"
@@ -25,8 +27,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\": "tests/",
-      "Tests\\Fixtures\\App\\": "tests/Fixtures/app"
+      "Tests\\": "tests/"
     }
   },
   "authors": [
