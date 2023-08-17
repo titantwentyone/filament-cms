@@ -6,7 +6,17 @@ beforeEach(function() {
 
 it('will create temp files for content in storage for css parsing', function() {
 
-    $fake_disk = \Illuminate\Support\Facades\Storage::fake('filament_cms_render');
+    app()->bind(\Titantwentyone\FilamentCMS\Domain\Render\RenderStorage::class, function() use (&$fake_disk) {
+        $render_storage = new class {
+            public function getStorage()
+            {
+                return \Illuminate\Support\Facades\Storage::fake();
+            }
+        };
+        return $render_storage;
+    });
+
+    $fake_disk = app(\Titantwentyone\FilamentCMS\Domain\Render\RenderStorage::class)->getStorage();
 
     $page = Tests\Fixtures\App\Models\Page::make([
         'title' => 'Test Page',
@@ -42,17 +52,23 @@ it('will create temp files for parts in storage for css parsing', function () {
         'header' => 'cms.parts.header'
     ]);
 
-    $fake_disk = \Illuminate\Support\Facades\Storage::fake('filament_cms_render');
+    app()->bind(\Titantwentyone\FilamentCMS\Domain\Render\RenderStorage::class, function() use (&$fake_disk) {
+        $render_storage = new class {
+            public function getStorage()
+            {
+                return \Illuminate\Support\Facades\Storage::fake();
+            }
+        };
+        return $render_storage;
+    });
 
-//    app()->bind('filament_cms_render', function () use ($fake_disk) {
-//        return $fake_disk;
-//    });
+    $fake_disk = app(\Titantwentyone\FilamentCMS\Domain\Render\RenderStorage::class)->getStorage();
 
     $part = \Titantwentyone\FilamentCMS\Models\Part::make([
         'location' => 'header',
         'slug' => 'test-part',
         'content' => [
-            'header_text' => 'Testing'
+            'test_part_field' => 'Testing'
         ]
     ]);
 
@@ -72,7 +88,8 @@ test('user can change location of rendered parts and content', function () {
 
     app()->config['filament-cms.dynamic_render_location'] = base_path('/storage/different-cms-render-location');
 
-    expect(app('filament_cms_render')->path(''))->toBe(base_path('/storage/different-cms-render-location/'));
+    expect(app(\Titantwentyone\FilamentCMS\Domain\Render\RenderStorage::class)->getStorage()->path(''))
+        ->toBe(base_path('/storage/different-cms-render-location/'));
 })
 ->covers(\Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView::class);
 

@@ -3,6 +3,9 @@
 namespace Titantwentyone\FilamentCMS\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Tests\Fixtures\App\Domain\PartManager;
+use Titantwentyone\FilamentCMS\Domain\Part\Contracts\Manager;
 
 class Part extends Model
 {
@@ -21,13 +24,11 @@ class Part extends Model
 
     public function render()
     {
-        $part_views = config('filament-cms.part_views');
+        $manager = app(PartManager::class);
 
-        if(is_callable($part_views)) {
-            $view = $part_views($this->location);
-        } else {
-            $view = $part_views[$this->location];
-        }
+        $part_views = $manager->views();
+
+        $view = Arr::normalize($part_views)[$this->location];
 
         return view($view)->with([
             'part' => $this

@@ -1,1 +1,1 @@
-{!! $part->content['header_text'] !!}
+{!! $part->content['test_part_field'] !!}

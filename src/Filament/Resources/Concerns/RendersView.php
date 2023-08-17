@@ -2,20 +2,23 @@
 
 namespace Titantwentyone\FilamentCMS\Filament\Resources\Concerns;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
 use Titantwentyone\FilamentCMS\Domain\Process\AssetCompilationProcess;
+use Titantwentyone\FilamentCMS\Domain\Render\RenderStorage;
 use Titantwentyone\FilamentCMS\Models\Part;
 
 trait RendersView
 {
     private $cms_disk;
-    public function initializeRendersView()
+    public function bootRendersView(Filesystem $cms_disk)
     {
-        $this->cms_disk = app('filament_cms_render');
+        $render_storage = app(RenderStorage::class);
+        $this->cms_disk = $render_storage->getStorage();
     }
 
     protected function renderView(string $field)
