@@ -80,7 +80,7 @@ it('will run a command when saving content', function () {
 
     app()->bind(\Titantwentyone\FilamentCMS\Domain\Process\AssetCompilationProcess::class, function() {
         $process = new Symfony\Component\Process\Process(['echo', '"hello"']);
-        class p {
+        class ps {
 
             private $process;
             public function __construct(\Symfony\Component\Process\Process $process) {
@@ -93,7 +93,7 @@ it('will run a command when saving content', function () {
             }
         };
 
-        return new p($process);
+        return new ps($process);
     });
 
     $fake_disk = \Illuminate\Support\Facades\Storage::fake('filament_cms_render');
@@ -122,3 +122,52 @@ it('will run a command when saving content', function () {
         }, 1);
 })
 ->covers(\Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView::class);
+
+it('will run a command when updating content', function () {
+
+    app()->bind(\Titantwentyone\FilamentCMS\Domain\Process\AssetCompilationProcess::class, function() {
+        $process = new Symfony\Component\Process\Process(['echo', '"hello"']);
+        class pu {
+
+            private $process;
+            public function __construct(\Symfony\Component\Process\Process $process) {
+                return $this->process = $process;
+            }
+
+            public function get()
+            {
+                return $this->process;
+            }
+        };
+
+        return new pu($process);
+    });
+
+    $fake_disk = \Illuminate\Support\Facades\Storage::fake('filament_cms_render');
+
+    $page = Tests\Fixtures\App\Models\Page::create([
+        'title' => 'Test Page',
+        'slug' => 'test-page',
+        'is_published' => true,
+        'content' => 'hello'
+    ]);
+
+    \Pest\Livewire\livewire(Tests\Fixtures\App\Filament\Resources\PageResource\Pages\EditPage::class, [
+            'record' => $page->id
+        ])
+        ->fillForm($page->attributesToArray())
+        ->call('save');
+
+    $page_id = \Tests\Fixtures\App\Models\Page::first()->id;
+
+    \Illuminate\Support\Facades\Log::channel('filament_cms_dynamic_render')
+        ->assertLoggedTimes(function(\TiMacDonald\Log\LogEntry $log) use ($page_id) {
+            return $log->level == 'info' && $log->message == \Tests\Fixtures\App\Models\Page::class."\\n{$page_id}";
+        }, 1);
+
+    \Illuminate\Support\Facades\Log::channel('filament_cms_dynamic_render')
+        ->assertLoggedTimes(function(\TiMacDonald\Log\LogEntry $log) {
+            return $log->level == 'info' && $log->message == "\"hello\"\n";
+        }, 1);
+})
+    ->covers(\Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView::class);

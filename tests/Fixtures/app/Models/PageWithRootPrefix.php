@@ -8,12 +8,14 @@ use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Titantwentyone\FilamentCMS\Contracts\Content;
 
 #[CodeCoverageIgnore]
-class Post extends Content
+class PageWithRootPrefix extends Content
 {
+    protected $table = 'pages';
+
     use SoftDeletes;
 
-    public static $prefix = '/blog';
-    public static $view = 'post';
+    public static $prefix = '/';
+    public static $view = 'page';
 
     protected $fillable = [
         'title',

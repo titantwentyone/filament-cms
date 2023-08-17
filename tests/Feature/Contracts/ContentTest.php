@@ -24,7 +24,7 @@ it('will provide the correct url', function() {
 
     expect($page->url)->toBe('/');
 })
-->covers(\Tests\Fixtures\App\Models\Page::class);
+->covers(\Titantwentyone\FilamentCMS\Contracts\Content::class);
 
 it('there can only be one root item', function () {
 
@@ -52,7 +52,27 @@ it('there can only be one root item', function () {
     expect($page1->is_root)->toBeFalsy();
 
 })
-->covers(\Tests\Fixtures\App\Models\Page::class);
+->covers(\Titantwentyone\FilamentCMS\Contracts\Content::class);
+
+it('can scope content by its published state', function () {
+
+    $page1 = Tests\Fixtures\App\Models\Page::create([
+        'title' => 'Published',
+        'slug' => 'published',
+        'is_published' => true
+    ]);
+
+    $page2 = Tests\Fixtures\App\Models\Page::create([
+        'title' => 'Not Published',
+        'slug' => 'not-published',
+        'is_published' => false
+    ]);
+
+    expect(\Tests\Fixtures\App\Models\Page::all()->count())->toBe(2);
+    expect(\Tests\Fixtures\App\Models\Page::published()->count())->toBe(1);
+    expect(\Tests\Fixtures\App\Models\Page::published()->first()->title)->toBe('Published');
+})
+->covers(\Titantwentyone\FilamentCMS\Contracts\Content::class);
 
 it('will show the page if published', function() {
 
@@ -70,6 +90,7 @@ it('will show the page if published', function() {
 
     $this->get('/pages')->assertNotFound();
 })
+->skip(message: 'Covered in ContentControllerTest')
 ->covers(\Tests\Fixtures\App\Models\Page::class);
 
 it('will show the page if not published but logged in', function() {
@@ -103,4 +124,5 @@ it('will show the page if not published but logged in', function() {
     $this->get('/pages')->assertSuccessful();
     $this->get('/pages/another-page')->assertSuccessful();
 })
+->skip(message: 'Covered in ContentControllerTest')
 ->covers(\Tests\Fixtures\App\Models\Page::class);

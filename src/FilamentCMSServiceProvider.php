@@ -4,6 +4,7 @@ namespace Titantwentyone\FilamentCMS;
 
 use Filament\PluginServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 use Spatie\LaravelPackageTools\Package;
 use Symfony\Component\Process\Process;
@@ -37,22 +38,33 @@ class FilamentCMSServiceProvider extends PluginServiceProvider
             'root' => __DIR__.'/../stubs'
         ];
 
+//        dump(Storage::build([
+//            'driver' => 'local',
+//            'root' => __DIR__.'/../stubs'
+//        ]));
+
         app()->bind(StubHandler::class, function(Application $app) {
-            return new StubHandler([
-                'models' => Storage::build([
+
+            return new StubHandler(
+                [
+                    'models' => Storage::build([
+                        'driver' => 'local',
+                        'root' => app_path('/Models')
+                    ]),
+                    'migrations' => Storage::build([
+                        'driver' => 'local',
+                        'root' => database_path('migrations')
+                    ]),
+                    'filament' => Storage::build([
+                        'driver' => 'local',
+                        'root' => base_path(config('filament.resources.path'))
+                    ])
+                ],
+                Storage::build([
                     'driver' => 'local',
-                    'root' => app_path('/Models')
-                ]),
-                'migrations' => Storage::build([
-                    'driver' => 'local',
-                    'root' => database_path('migrations')
-                ]),
-                'filament' => Storage::build([
-                    'driver' => 'local',
-                    'root' => base_path(config('filament.resources.path'))
+                    'root' => realpath(__DIR__.'/../stubs')
                 ])
-            ],
-            Storage::disk('filament_cms_stubs'));
+            );
         });
 
         app()->bind('filament_cms_render', function($app) {

@@ -112,3 +112,39 @@ it('will throw an exception if the stub was not registered', function () {
 ->covers(\Titantwentyone\FilamentCMS\Commands\Composites\StubHandler::class)
 ->expectExceptionMessage('stub is not registered')
 ->expectException(Exception::class);
+
+it('will throw an expection if there was an attempt to regsiter stubs with an empty array', function () {
+
+    $models = \Illuminate\Support\Facades\Storage::fake('models');
+
+    $stubs = \Illuminate\Support\Facades\Storage::fake('stubs');
+
+    //$models->put('TestModel.php', '');
+
+    $handler = new \Titantwentyone\FilamentCMS\Commands\Composites\StubHandler([
+        'models' => $models
+    ], $stubs);
+
+    $handler->registerStubs([]);
+})
+->covers(\Titantwentyone\FilamentCMS\Commands\Composites\StubHandler::class)
+->expectExceptionMessage('The array cannot be empty')
+->expectException(Exception::class);
+
+it('will thro an expcetion if the stub given is not a string', function () {
+
+    $models = \Illuminate\Support\Facades\Storage::fake('models');
+
+    $stubs = \Illuminate\Support\Facades\Storage::fake('stubs');
+
+    $handler = new \Titantwentyone\FilamentCMS\Commands\Composites\StubHandler([
+        'models' => $models
+    ], $stubs);
+
+    $handler->registerStubs([
+        'test' => ['invalid type']
+    ]);
+})
+->covers(\Titantwentyone\FilamentCMS\Commands\Composites\StubHandler::class)
+->expectExceptionMessage('Stubs must be file paths given as strings')
+->expectException(Exception::class);

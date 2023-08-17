@@ -24,5 +24,11 @@ it('will set up the relevant disks', function () {
             'root' => base_path(config('filament.resources.path'))
         ]);
 
+    \Illuminate\Support\Facades\Storage::shouldHaveReceived('build')
+        ->with([
+            'driver' => 'local',
+            'root' => realpath(__DIR__.'/../../stubs')
+        ]);
+
 })
 ->covers(\Titantwentyone\FilamentCMS\FilamentCMSServiceProvider::class);

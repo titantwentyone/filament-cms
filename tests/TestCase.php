@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\LivewireServiceProvider;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
+use Tests\Fixtures\App\Models\PageWithRootPrefix;
 use Tests\Fixtures\app\ResourceServiceProvider;
 use Titantwentyone\FilamentCMS\FilamentCMSServiceProvider;
 
@@ -57,7 +58,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         $app['config']->set('filament-cms.models', [
             \Tests\Fixtures\App\Models\Page::class,
-            \Tests\Fixtures\App\Models\Post::class
+            \Tests\Fixtures\App\Models\Post::class,
+            PageWithRootPrefix::class
         ]);
 
         $app['config']->set('view.paths', array_merge(
