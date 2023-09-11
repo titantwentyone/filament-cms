@@ -29,4 +29,9 @@ abstract class Content extends \Illuminate\Database\Eloquent\Model
     {
         $query->where('is_published', true);
     }
+
+    public function viewData() : array
+    {
+        return [];
+    }
 }

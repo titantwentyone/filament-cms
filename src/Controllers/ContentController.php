@@ -19,9 +19,9 @@ class ContentController
                     abort(404);
                 }
 
-                return view($model::$view, [
+                return view($model::$view, array_merge([
                     'model' => $instance
-                ]);
+                ], $instance->viewData()));
             })->middleware('web');
 
             \Illuminate\Support\Facades\Route::get($prefix."/{slug}", function($slug) use ($model) {
@@ -31,9 +31,9 @@ class ContentController
                     abort(404);
                 }
 
-                return view($model::$view, [
+                return view($model::$view, array_merge([
                     'model' => $instance
-                ]);
+                ], $instance->viewData()));
             })->middleware('web');
 
         });
