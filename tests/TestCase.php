@@ -64,6 +64,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
             PageWithArgs::class
         ]);
 
+        $app['config']->set('filament-cms.compile', true);
+
         $app['config']->set('view.paths', array_merge(
             config('view.paths'),
             [

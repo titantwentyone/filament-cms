@@ -30,30 +30,32 @@ trait RendersView
 //            'root' => storage_path('/cms')
 //        ]);
 
-        try {
-            if(get_class($this->record) == Part::class) {
-                $content = $this->record->render();
-                $this->cms_disk->put('parts/'.$this->record->slug.'.blade.php', $content);
-            } else {
-                if($this->record->{$field}) {
-                    $content = Blade::render($this->record->{$field});
-                    $result = $this->cms_disk->put($this->record->slug.'.blade.php', $content);
+        if(config('filament-cms.compile') == true) {
+            try {
+                if(get_class($this->record) == Part::class) {
+                    $content = $this->record->render();
+                    $this->cms_disk->put('parts/'.$this->record->slug.'.blade.php', $content);
+                } else {
+                    if($this->record->{$field}) {
+                        $content = Blade::render($this->record->{$field});
+                        $result = $this->cms_disk->put($this->record->slug.'.blade.php', $content);
+                    }
                 }
+            } catch(\Exception $e) {
+                dd($e);
             }
-        } catch(\Exception $e) {
-            dd($e);
+
+            $render_info = [
+                'type' => get_class($this->record),
+                'id' => $this->record->id
+            ];
+
+            $render_info = collect($render_info)->join('\n');
+
+            Log::channel('filament_cms_dynamic_render')->info($render_info);
+
+            $this->runViteBuild();
         }
-
-        $render_info = [
-            'type' => get_class($this->record),
-            'id' => $this->record->id
-        ];
-
-        $render_info = collect($render_info)->join('\n');
-
-        Log::channel('filament_cms_dynamic_render')->info($render_info);
-
-        $this->runViteBuild();
     }
 
     protected function runViteBuild()
