@@ -1,7 +1,18 @@
 <?php
 
+use Symfony\Component\Process\Process;
+use Titantwentyone\FilamentCMS\Domain\Process\AssetCompilationProcess;
+
 beforeEach(function() {
     \TiMacDonald\Log\LogFake::bind();
+
+    //mock the symfony process
+    app()->bind(AssetCompilationProcess::class, function($app) {
+        $command = 'ls -la';
+        $command = explode(" ", $command);
+        $process = app()->makeWith(Process::class, ['command' => $command]);
+        return new AssetCompilationProcess($process);
+    });
 });
 
 it('will create temp files for content in storage for css parsing', function() {

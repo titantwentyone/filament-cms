@@ -7,6 +7,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\UnableToWriteFile;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Titantwentyone\FilamentCMS\Domain\Process\AssetCompilationProcess;
 use Titantwentyone\FilamentCMS\Domain\Render\RenderStorage;
@@ -28,12 +30,18 @@ trait RendersView
 //            'root' => storage_path('/cms')
 //        ]);
 
-        if(get_class($this->record) == Part::class) {
-            $content = $this->record->render();
-            $this->cms_disk->put('parts/'.$this->record->slug.'.blade.php', $content);
-        } else {
-            $content = Blade::render($this->record->{$field});
-            $this->cms_disk->put($this->record->slug.'.blade.php', $content);
+        try {
+            if(get_class($this->record) == Part::class) {
+                $content = $this->record->render();
+                $this->cms_disk->put('parts/'.$this->record->slug.'.blade.php', $content);
+            } else {
+                if($this->record->{$field}) {
+                    $content = Blade::render($this->record->{$field});
+                    $result = $this->cms_disk->put($this->record->slug.'.blade.php', $content);
+                }
+            }
+        } catch(\Exception $e) {
+            dd($e);
         }
 
         $render_info = [
@@ -53,9 +61,18 @@ trait RendersView
         //$process = new Process(['npm', 'run', 'build']);
         $process = app(AssetCompilationProcess::class)->get();
         $process->setWorkingDirectory(base_path());
-        $process->run(function($type, $buffer) {
-            Log::channel('filament_cms_dynamic_render')->info($buffer);
-        });
+
+        try {
+            $process->mustRun(function($type, $buffer) {
+                Log::channel('filament_cms_dynamic_render')->info($buffer);
+            });
+        } catch(ProcessFailedException $e) {
+            dd($e);
+        }
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
     }
 
     protected function afterSave()

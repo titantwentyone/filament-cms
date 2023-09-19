@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('title')->required();
             $table->boolean('is_published')->default(false);
             $table->boolean('is_root')->default(false);
+            $table->boolean('uses_route_parameters')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

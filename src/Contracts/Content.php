@@ -34,4 +34,9 @@ abstract class Content extends \Illuminate\Database\Eloquent\Model
     {
         return [];
     }
+
+    public static function hasRouteArguments() : array
+    {
+        return [];
+    }
 }
