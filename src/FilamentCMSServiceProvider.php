@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
 use Symfony\Component\Process\Process;
 use Titantwentyone\FilamentCMS\Commands\Composites\StubHandler;
@@ -23,6 +24,7 @@ class FilamentCMSServiceProvider extends PluginServiceProvider
     protected array $resources = [
         PartResource::class
     ];
+
     public function configurePackage(Package $package): void
     {
         $package->name('filament-cms')
@@ -31,6 +33,8 @@ class FilamentCMSServiceProvider extends PluginServiceProvider
             ->hasRoute('web')
             ->hasMigration('create_parts_table')
             ->runsMigrations();
+
+        Livewire::component('titantwentyone.filament-c-m-s.filament.resources.part-resource.pages.edit-part', PartResource\Pages\EditPart::class);
     }
 
     public function packageBooted(): void
