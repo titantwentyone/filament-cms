@@ -5,10 +5,10 @@ namespace Titantwentyone\FilamentCMS\Filament\Resources;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView;
@@ -26,6 +26,8 @@ class PartResource extends Resource
     protected static ?string $recordTitleAttribute = 'id';
 
     public static string $contentField = 'content';
+
+    protected static ?int $navigationSort = 999;
 
     public static function form(Form $form): Form
     {

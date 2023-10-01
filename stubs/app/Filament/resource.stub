@@ -5,10 +5,8 @@ namespace {{ namespace }};
 use {{ namespace }}\{{ model }}Resource\Pages;
 use {{ model_fqn }};
 use Filament\Forms;
-use Filament\Resources\Form;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Support\Str;
 
@@ -19,7 +17,7 @@ class {{ model }}Resource extends Resource
     protected static ?string $navigationGroup = 'content';
     public static string $contentField = 'content';
 
-    public static function form(Form $form): Form
+    public static function form(Forms\Form $form): Forms\Form
     {
         return $form
             ->schema([
@@ -64,7 +62,7 @@ class {{ model }}Resource extends Resource
         ];
     }
 
-    public static function table(Table $table): Table
+    public static function table(Tables\Table $table): Tables\Table
     {
         return $table
             ->columns([

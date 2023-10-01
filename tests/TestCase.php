@@ -4,19 +4,22 @@ namespace Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
+use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
+use Filament\Infolists\InfolistsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
+use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\LivewireServiceProvider;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Tests\Fixtures\App\Models\PageWithArgs;
 use Tests\Fixtures\App\Models\PageWithRootPrefix;
-use Tests\Fixtures\app\ResourceServiceProvider;
 use Titantwentyone\FilamentCMS\FilamentCMSServiceProvider;
+use Titantwentyone\FilamentCMS\PartPanelProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -25,20 +28,33 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     //protected $enablesPackageDiscoveries = true;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->actingAs(\Tests\Fixtures\App\Models\User::factory()->create());
+    }
+
     protected function getPackageProviders($app)
     {
         return [
+            ActionsServiceProvider::class,
             BladeCaptureDirectiveServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
             FilamentServiceProvider::class,
             FormsServiceProvider::class,
+            InfolistsServiceProvider::class,
             LivewireServiceProvider::class,
             NotificationsServiceProvider::class,
+            //SpatieLaravelSettingsPluginServiceProvider::class,
+            //SpatieLaravelTranslatablePluginServiceProvider::class,
             SupportServiceProvider::class,
             TablesServiceProvider::class,
-            ResourceServiceProvider::class,
-            FilamentCMSServiceProvider::class
+            WidgetsServiceProvider::class,
+
+            FilamentCMSServiceProvider::class,
+            \Tests\ResourceServiceProvider::class,
+//            PartPanelProvider::class
         ];
     }
 
@@ -73,12 +89,12 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ],
         ));
 
-        $app['config']->set('filament.livewire.path', realpath(__DIR__.'/Fixtures/app/Filament'));
+//        $app['config']->set('filament.livewire.path', realpath(__DIR__.'/Fixtures/app/Filament'));
         $app['config']->set('filament.resources.namespace', 'Tests\Fixtures\App\Filament\Resources');
-        $app['config']->set('filament.resources.path', realpath(__DIR__.'/Fixtures/app/Filament/Resources'));
-        $app['config']->set('filament.resources.register', [
-            \Tests\Fixtures\App\Filament\Resources\PageResource::class
-        ]);
+//        $app['config']->set('filament.resources.path', realpath(__DIR__.'/Fixtures/app/Filament/Resources'));
+//        $app['config']->set('filament.resources.register', [
+//            \Tests\Fixtures\App\Filament\Resources\PageResource::class
+//        ]);
 
         app()->bind(\Titantwentyone\FilamentCMS\Domain\Part\Manager::class, \Tests\Fixtures\App\Domain\PartManager::class);
     }

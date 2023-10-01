@@ -11,7 +11,7 @@ it('has a delete action', function() {
     \Pest\Livewire\livewire(\Titantwentyone\FilamentCMS\Filament\Resources\PartResource\Pages\EditPart::class, [
         'record' => $part->id
     ])
-        ->assertPageActionExists('delete');
+        ->assertActionExists('delete');
 
 })
 ->covers(\Titantwentyone\FilamentCMS\Filament\Resources\PartResource\Pages\EditPart::class);

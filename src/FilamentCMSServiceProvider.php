@@ -2,13 +2,13 @@
 
 namespace Titantwentyone\FilamentCMS;
 
-use Filament\PluginServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Symfony\Component\Process\Process;
 use Titantwentyone\FilamentCMS\Commands\Composites\StubHandler;
 use Titantwentyone\FilamentCMS\Commands\MakeContent;
@@ -19,12 +19,8 @@ use Titantwentyone\FilamentCMS\Domain\Render\RenderStorage;
 use Titantwentyone\FilamentCMS\Filament\Resources\Concerns\RendersView;
 use Titantwentyone\FilamentCMS\Filament\Resources\PartResource;
 
-class FilamentCMSServiceProvider extends PluginServiceProvider
+class FilamentCMSServiceProvider extends PackageServiceProvider
 {
-    protected array $resources = [
-        PartResource::class
-    ];
-
     public function configurePackage(Package $package): void
     {
         $package->name('filament-cms')
@@ -34,7 +30,7 @@ class FilamentCMSServiceProvider extends PluginServiceProvider
             ->hasMigration('create_parts_table')
             ->runsMigrations();
 
-        Livewire::component('titantwentyone.filament-c-m-s.filament.resources.part-resource.pages.edit-part', PartResource\Pages\EditPart::class);
+        //Livewire::component('titantwentyone.filament-c-m-s.filament.resources.part-resource.pages.edit-part', PartResource\Pages\EditPart::class);
     }
 
     public function packageBooted(): void
