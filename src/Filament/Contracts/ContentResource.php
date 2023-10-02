@@ -40,7 +40,7 @@ abstract class ContentResource extends Resource
         return [
             Components\TextInput::make('title')
                 ->required()
-                ->reactive()
+                ->live(onBlur: true)
                 ->afterStateUpdated(function($state, $set, $livewire) {
                     if($livewire instanceof CreateRecord) {
                         $set('slug', Str::slug($state));
