@@ -30,3 +30,42 @@ it('will show a table of content', function () {
 
 })
 ->covers(\Tests\Fixtures\App\Filament\Resources\PageResource::class);
+
+it('has the header form', function () {
+
+    \Pest\Livewire\livewire(\Tests\Fixtures\App\Filament\Resources\PageResource\Pages\CreatePage::class)
+        ->assertFormFieldExists('title',function(\Filament\Forms\Components\TextInput $field) {
+            return $field->isRequired() &&
+                $field->reactive();
+        })
+        ->assertFormFieldExists('is_root', function(\Filament\Forms\Components\Toggle $field) {
+            //confirms it is a toggle button
+            return true;
+        })
+        ->assertFormFieldExists('slug', function(\Filament\Forms\Components\TextInput $field) {
+            return $field->isRequired() &&
+                in_array(new \Illuminate\Validation\Rules\Unique('pages', 'slug'), $field->getValidationRules());
+        });
+
+});
+
+it('will update the slug', function () {
+
+    \Pest\Livewire\livewire(\Tests\Fixtures\App\Filament\Resources\PageResource\Pages\CreatePage::class)
+        ->fillForm([
+            'title' => 'Test Page'
+        ])
+        ->assertSet('data.slug', 'test-page');
+});
+
+it('has the footer form', function () {
+
+    \Pest\Livewire\livewire(\Tests\Fixtures\App\Filament\Resources\PageResource\Pages\CreatePage::class)
+        ->assertFormFieldExists('created_at', function(\Filament\Forms\Components\DatePicker $field) {
+            return $field->isRequired() &&
+                $field->getDefaultState()->format('d M Y H:i:s') == \Illuminate\Support\Carbon::now()->format('d M Y H:i:s');
+        })
+        ->assertFormFieldExists('is_published', function(\Filament\Forms\Components\Toggle $field) {
+            return $field->getDefaultState() == false;
+        });
+});
