@@ -12,8 +12,9 @@ use Tests\Fixtures\App\Models\Page;
 
 abstract class ContentResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
-    protected static ?string $navigationGroup = 'content';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = 'Content';
     public static function form(Forms\Form $form): Forms\Form
     {
         $model = static::$model;
