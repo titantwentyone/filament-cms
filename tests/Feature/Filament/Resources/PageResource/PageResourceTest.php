@@ -69,3 +69,21 @@ it('has the footer form', function () {
             return $field->getDefaultState() == false;
         });
 });
+
+it('displays the table', function () {
+
+    $page = \Tests\Fixtures\App\Models\Page::create([
+        'title' => 'Test Page',
+        'slug' => 'test-page'
+    ]);
+
+    \Pest\Livewire\livewire(\Tests\Fixtures\App\Filament\Resources\PageResource\Pages\ListPages::class)
+        ->assertCanSeeTableRecords(collect([$page]))
+        ->assertTableColumnExists('title', function (\Filament\Tables\Columns\TextColumn $column) {
+            return $column->isSearchable() &&
+                $column->isSortable();
+        })
+        ->assertTableActionExists('edit')
+        ->assertTableBulkActionExists('delete');
+
+});

@@ -9,84 +9,13 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Illuminate\Support\Str;
+use Titantwentyone\FilamentCMS\Filament\Contracts\ContentResource;
 
-class PageResource extends Resource
+class PageResource extends ContentResource
 {
     protected static ?string $model = Page::class;
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
-    protected static ?string $navigationGroup = 'content';
+
     public static string $contentField = 'content';
-
-    public static function form(Forms\Form $form): Forms\Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Grid::make()
-                    ->columns(1)
-                    ->schema(static::headerForm()),
-                Forms\Components\Grid::make()
-                    ->columns(1)
-                    ->schema(Page::form()),
-                Forms\Components\Grid::make()
-                    ->columns(1)
-                    ->schema(static::footerForm())
-            ]);
-    }
-
-    private static function headerForm(): array
-    {
-        return [
-            Forms\Components\TextInput::make('title')
-                ->required()
-                ->reactive()
-                ->afterStateUpdated(function($state, $set, $livewire) {
-                    if($livewire instanceof CreateRecord) {
-                        $set('slug', Str::slug($state));
-                    }
-                }),
-            Forms\Components\Toggle::make('is_root'),
-            Forms\Components\TextInput::make('slug')
-                ->required()
-                ->unique(ignoreRecord: true)
-        ];
-    }
-
-    private static function footerForm(): array
-    {
-        return [
-            Forms\Components\DatePicker::make('created_at')
-                ->required()
-                ->default(fn() => now()),
-            Forms\Components\Toggle::make('is_published')
-                ->default(false)
-        ];
-    }
-
-    public static function table(Tables\Table $table): Tables\Table
-    {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable()
-                    ->sortable()
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
-    }
-    
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
     
     public static function getPages(): array
     {
