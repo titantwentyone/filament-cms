@@ -4,10 +4,13 @@ namespace Titantwentyone\FilamentCMS\Filament\Contracts;
 
 use Filament\Forms;
 use Filament\Forms\Components;
+use Filament\Resources\Pages\PageRegistration;
+use Filament\Support\Enums\Alignment;
 use Filament\Tables;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Illuminate\Support\Str;
+use Tests\Fixtures\App\Filament\Resources\PageResource;
 use Tests\Fixtures\App\Models\Page;
 
 abstract class ContentResource extends Resource
@@ -64,10 +67,29 @@ abstract class ContentResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
+            ->recordUrl(false)
             ->columns([
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable()
-                    ->sortable()
+                Tables\Columns\Layout\Split::make([
+                    Tables\Columns\TextColumn::make('title')
+                        ->searchable()
+                        ->sortable()
+                        ->url(function($record) {
+                            return static::getUrl('edit', ['record' => $record]);
+                        }),
+                    Tables\Columns\Layout\Stack::make([
+                        Tables\Columns\Layout\Split::make([
+                            Tables\Columns\ToggleColumn::make('is_root')
+                                ->onColor('success')
+                                ->onIcon('heroicon-o-home')
+                                ->offIcon('heroicon-o-home'),
+                            Tables\Columns\ToggleColumn::make('is_published')
+                                ->onColor('success')
+                                ->onIcon('heroicon-o-bolt')
+                                ->offIcon('heroicon-o-bolt')
+
+                        ])->grow(false)
+                    ])->alignment(Alignment::End)
+                ])
             ])
             ->filters([
                 //

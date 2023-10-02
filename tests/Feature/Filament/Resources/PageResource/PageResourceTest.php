@@ -83,6 +83,16 @@ it('displays the table', function () {
             return $column->isSearchable() &&
                 $column->isSortable();
         })
+        ->assertTableColumnExists('is_root', function(\Filament\Forms\Components\Toggle $field) {
+            return $field->getOnIcon() == 'heroicon-o-home' &&
+                $field->getOffIcon() == 'heroicon-o-home' &&
+                $field->getOnColor() == 'success';
+        })
+        ->assertTableColumnExists('is_published', function(\Filament\Forms\Components\Toggle $field) {
+            return $field->getOnIcon() == 'heroicon-o-bolt' &&
+                $field->getOffIcon() == 'heroicon-o-bolt' &&
+                $field->getOnColor() == 'success';
+        })
         ->assertTableActionExists('edit')
         ->assertTableBulkActionExists('delete');
 
