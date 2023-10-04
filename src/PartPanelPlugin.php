@@ -19,7 +19,7 @@ use Titantwentyone\FilamentCMS\Filament\Resources\PartResource;
 
 class PartPanelPlugin implements Plugin
 {
-    public static function make(Manager $manager): static
+    public static function make(string $manager): static
     {
         //@todo create command to generate empty PartManager class
         app()->bind(Manager::class, $manager);
