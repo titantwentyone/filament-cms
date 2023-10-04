@@ -14,12 +14,15 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Orchestra\Testbench\Http\Middleware\VerifyCsrfToken;
+use Titantwentyone\FilamentCMS\Domain\Part\Contracts\Manager;
 use Titantwentyone\FilamentCMS\Filament\Resources\PartResource;
 
 class PartPanelPlugin implements Plugin
 {
-    public static function make(): static
+    public static function make(Manager $manager): static
     {
+        //@todo create command to generate empty PartManager class
+        app()->bind(Manager::class, $manager);
         return app(static::class);
     }
 

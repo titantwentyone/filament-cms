@@ -51,6 +51,8 @@ it('will create temp files for content in storage for css parsing', function() {
 
 it('will create temp files for parts in storage for css parsing', function () {
 
+    app()->bind(\Titantwentyone\FilamentCMS\Domain\Part\Contracts\Manager::class, \Tests\Fixtures\App\Domain\PartManager::class);
+
     \Illuminate\Support\Facades\Config::set('filament-cms.part_locations', [
          'header'
     ]);

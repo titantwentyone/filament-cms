@@ -95,8 +95,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
 //        $app['config']->set('filament.resources.register', [
 //            \Tests\Fixtures\App\Filament\Resources\PageResource::class
 //        ]);
-
-        app()->bind(\Titantwentyone\FilamentCMS\Domain\Part\Manager::class, \Tests\Fixtures\App\Domain\PartManager::class);
     }
 
 

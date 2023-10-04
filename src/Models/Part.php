@@ -24,7 +24,7 @@ class Part extends Model
 
     public function render()
     {
-        $manager = app(\Titantwentyone\FilamentCMS\Domain\Part\Manager::class);
+        $manager = app(Manager::class);
 
         $part_views = $manager->views();
 

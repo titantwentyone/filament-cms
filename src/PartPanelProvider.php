@@ -10,11 +10,11 @@ use Filament\PanelProvider;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Orchestra\Testbench\Http\Middleware\VerifyCsrfToken;
 use Titantwentyone\FilamentCMS\Filament\Resources\PartResource;
 
 class PartPanelProvider extends PanelProvider
