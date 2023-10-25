@@ -1,5 +1,5 @@
-const { logMemoryUsage } = require('./monitor-memory');
-const { exec } = require('child_process');
+import { logMemoryUsage } from './monitor-memory.js';
+import { exec } from 'child_process';
 
 // Run memory monitoring code before "npm run build"
 logMemoryUsage();

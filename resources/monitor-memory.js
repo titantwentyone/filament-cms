@@ -9,6 +9,4 @@ function logMemoryUsage() {
     console.log(`  External: ${toMB(memoryUsage.external)} MB`);
 }
 
-module.exports = {
-    logMemoryUsage
-};
+export { logMemoryUsage }
